@@ -13,7 +13,7 @@ export class PaymentMethod {
 	}
 
 	set paymentType(value: PaymentType) {
-		this._paymentType = enumValidator(PaymentType)(value, "paymentType");
+		this._paymentType = enumValidator(PaymentType, value, "paymentType");
 	}
 
 	toJSON() {
