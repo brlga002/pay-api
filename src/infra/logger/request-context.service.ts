@@ -12,19 +12,19 @@ export class RequestContextService {
 		return this.asyncLocalStorage.run(store, fn);
 	}
 
-	private get<T>(key: string): T | undefined {
-		return this.asyncLocalStorage.getStore()?.get(key) as T | undefined;
-	}
-
-	set<T>(key: string, value: T): void {
-		this.asyncLocalStorage.getStore()?.set(key, value);
-	}
-
 	getRequestId(): string {
 		return this.get<string>("requestId") ?? "";
 	}
 
 	setRequestId(value: string): void {
 		this.set("requestId", value);
+	}
+
+	private get<T>(key: string): T | undefined {
+		return this.asyncLocalStorage.getStore()?.get(key) as T | undefined;
+	}
+
+	private set<T>(key: string, value: T): void {
+		this.asyncLocalStorage.getStore()?.set(key, value);
 	}
 }
