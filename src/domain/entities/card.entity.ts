@@ -1,5 +1,6 @@
+import { PaymentMethod } from "@domain/entities/payment-method";
+import { PaymentType } from "@domain/enums/payment-type.enum";
 import { DomainError } from "@domain/exceptions/DomainError";
-import { PaymentMethod, PaymentType } from "./payment-method";
 
 interface CardProps {
 	number: string;
