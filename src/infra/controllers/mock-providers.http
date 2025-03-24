@@ -1,0 +1,77 @@
+@host=http://localhost:3000
+
+### ✅ Mock Provider 1 - Sucesso
+POST {{host}}/mock/provider1/charges
+Content-Type: application/json
+
+{
+  "amount": 1000,
+  "currency": "BRL",
+  "description": "Pedido #123",
+  "paymentMethod": {
+    "type": "card",
+    "card": {
+      "number": "4111111111111111",
+      "holderName": "Gabriel Lima",
+      "cvv": "123",
+      "expirationDate": "12/2025",
+      "installments": 1
+    }
+  }
+}
+
+### ❌ Mock Provider 1 - Falha (cartão inválido)
+POST {{host}}/mock/provider1/charges
+Content-Type: application/json
+
+{
+  "amount": 1000,
+  "currency": "BRL",
+  "description": "Pedido #erro",
+  "paymentMethod": {
+    "type": "card",
+    "card": {
+      "number": "4000000000000002",
+      "holderName": "Erro",
+      "cvv": "123",
+      "expirationDate": "12/2025",
+      "installments": 1
+    }
+  }
+}
+
+### ✅ Mock Provider 2 - Sucesso
+POST {{host}}/mock/provider2/transactions
+Content-Type: application/json
+
+{
+  "amount": 1500,
+  "currency": "BRL",
+  "statementDescriptor": "Pedido #456",
+  "paymentType": "card",
+  "card": {
+    "number": "4111111111111111",
+    "holder": "Gabriel Lima",
+    "cvv": "123",
+    "expiration": "12/25",
+    "installmentNumber": 1
+  }
+}
+
+### ❌ Mock Provider 2 - Falha
+POST {{host}}/mock/provider2/transactions
+Content-Type: application/json
+
+{
+  "amount": 1500,
+  "currency": "BRL",
+  "statementDescriptor": "Pedido #erro",
+  "paymentType": "card",
+  "card": {
+    "number": "4000000000009995",
+    "holder": "Erro",
+    "cvv": "123",
+    "expiration": "12/25",
+    "installmentNumber": 1
+  }
+}
