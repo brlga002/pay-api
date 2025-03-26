@@ -3,7 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { IChargeRepository } from "src/domain/repositories/payment.repository";
 import { Charge } from "@domain/entities/charge.entity";
 import { PrismaService } from "./prisma.service";
-import { Card } from "@domain/entities/card.entity";
+import { Credit } from "@domain/entities/credt.entity";
 
 @Injectable()
 export class ChargePrismaRepository implements IChargeRepository {
@@ -22,11 +22,18 @@ export class ChargePrismaRepository implements IChargeRepository {
 
 		return Charge.create({
 			...payment,
-			paymentMethod: {} as Card,
+			paymentMethod: new Credit({
+				installments: 1,
+			}),
+			paymentSource: {
+				...(payment.paymentSourceId && { id: payment.paymentSourceId }),
+				sourceType: payment.paymentSourceType,
+			},
 		});
 	}
 
 	async save(payment: Charge): Promise<void> {
+		const paymentMethod = payment.paymentMethod.toJSON();
 		const result = await this.client.prismaCharge.create({
 			select: {
 				id: true,
@@ -41,6 +48,8 @@ export class ChargePrismaRepository implements IChargeRepository {
 				status: payment.status,
 				currentAmount: payment.currentAmount,
 				paymentMethod: payment.paymentMethod.paymentType,
+				paymentMethodInstallments: paymentMethod.installments,
+				paymentSourceType: payment.paymentSource.sourceType,
 				providerId: payment.providerId,
 				createdAt: payment.createdAt,
 			},
@@ -56,7 +65,7 @@ export class ChargePrismaRepository implements IChargeRepository {
 			data: {
 				paymentMethod: payment.paymentMethod.paymentType,
 				paymentSourceType: payment.paymentSource?.sourceType,
-				paymentSourceId: payment.paymentSource?.cardId,
+				paymentSourceId: payment.paymentSource?.id,
 				providerId: payment.providerId,
 				status: payment.status,
 			},
