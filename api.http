@@ -8,7 +8,7 @@ Content-Type: application/json
 
 {
   "merchantId": "1323",
-  "orderId": "4688",
+  "orderId": "468ssedd8",
   "amount": 1500,
   "currency": "BRL",
   "description": "Pedido #erro",
@@ -26,11 +26,20 @@ Content-Type: application/json
 
 ### Listar cobranças
 GET {{host}}/charges
-?page=2
-&limit=8
-&merchantId=1323
-&orderId=4688
-&sort=asc
+?page=1
+# &limit=8
+# &merchantId=1323
+# &orderId=4688
+# &sort=asc
 
 ### Consultar cobrança por ID
-GET {{host}}/charges/f72edda9-6646-45f6-80c6-ff3e30160cb3
+GET {{host}}/charges/5b6289c0-28c9-4398-90c5-cd3fc0d5da62
+
+
+### Estornar cobrança 
+POST {{host}}/refunds/3587b968-c975-4c05-9ad0-04dd37760606
+Content-Type: application/json
+
+{
+  "amount": 1000
+}
