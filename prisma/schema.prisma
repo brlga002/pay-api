@@ -6,3 +6,40 @@ datasource db {
   provider = "postgresql"
   url      = env("DB_URL")
 }
+
+enum Currency {
+  BRL
+}
+
+enum PaymentStatus {
+  pending
+  authorized
+  paid
+  failed
+  refunded
+  voided
+}
+
+enum PaymentMethod {
+  credit
+}
+
+model PrismaCharge {
+  id                String        @id @default(uuid())
+  merchantId        String        @map("merchant_id")
+  orderId           String        @map("order_id")
+  amount            Float
+  currency          Currency
+  description       String
+  status            PaymentStatus
+  providerId        String?
+  currentAmount     Float         @map("current_amount")
+  paymentSourceType String?       @map("payment_source_type")
+  paymentSourceId   String?       @map("payment_source_id")
+  paymentMethod     PaymentMethod @map("payment_method")
+  createdAt         DateTime      @default(now())
+  updateAt          DateTime?     @updatedAt
+
+  @@unique([merchantId, orderId])
+  @@map("charges")
+}
