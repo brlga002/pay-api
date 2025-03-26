@@ -32,22 +32,22 @@ export class PinoLoggerService extends ConsoleLogger implements LoggerService {
 	}
 
 	log(obj: unknown, msg?: string, context?: string) {
-		this.getLogger(context).info(obj, msg);
+		this.getLogger(context ?? msg).info(obj, msg);
 	}
 
 	error(obj: unknown, msg?: string, context?: string) {
-		this.getLogger(context).error(obj, msg);
+		this.getLogger(context ?? msg).error(obj, msg);
 	}
 
 	warn(obj: unknown, msg?: string, context?: string) {
-		this.getLogger(context).warn(obj, msg);
+		this.getLogger(context ?? msg).warn(obj, msg);
 	}
 
 	debug(obj: unknown, msg?: string, context?: string) {
-		this.getLogger(context).debug(obj, msg);
+		this.getLogger(context ?? msg).debug(obj, msg);
 	}
 
 	verbose(obj: unknown, msg?: string, context?: string) {
-		this.getLogger(context).trace(obj, msg);
+		this.getLogger(context ?? msg).trace(obj, msg);
 	}
 }
