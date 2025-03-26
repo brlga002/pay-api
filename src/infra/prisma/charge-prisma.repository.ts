@@ -1,6 +1,10 @@
 import { Injectable } from "@nestjs/common";
 
-import { IChargeRepository } from "src/domain/repositories/payment.repository";
+import {
+	IChargeRepository,
+	ListChargesProps,
+	ListChargesResponse,
+} from "src/domain/repositories/payment.repository";
 import { Charge } from "@domain/entities/charge.entity";
 import { PrismaService } from "./prisma.service";
 import { Credit } from "@domain/entities/credt.entity";
@@ -70,5 +74,62 @@ export class ChargePrismaRepository implements IChargeRepository {
 				status: payment.status,
 			},
 		});
+	}
+
+	async list(props: ListChargesProps): Promise<ListChargesResponse> {
+		const { page, limit, sort, merchantId, orderId } = props;
+		const where = {
+			...(merchantId && { merchantId: merchantId }),
+			...(orderId && { orderId: orderId }),
+		};
+		const totalItems = await this.client.prismaCharge.count({ where });
+
+		if (totalItems === 0) {
+			return {
+				meta: {
+					itemCount: 0,
+					totalItems: 0,
+					itemsPerPage: limit,
+					totalPages: 0,
+					currentPage: page,
+				},
+				items: [],
+			};
+		}
+
+		const payments = await this.client.prismaCharge.findMany({
+			where,
+			take: limit,
+			skip: (page - 1) * limit,
+			orderBy: {
+				createdAt: sort,
+			},
+		});
+
+		const items = payments.map((payment) =>
+			Charge.create({
+				...payment,
+				paymentMethod: new Credit({
+					installments: payment.paymentMethodInstallments || 1,
+				}),
+				paymentSource: {
+					...(payment.paymentSourceId && { id: payment.paymentSourceId }),
+					sourceType: payment.paymentSourceType,
+				},
+			}),
+		);
+
+		const pages = Math.ceil(totalItems / limit);
+
+		return {
+			meta: {
+				itemCount: items.length,
+				totalItems,
+				itemsPerPage: limit,
+				totalPages: pages,
+				currentPage: page,
+			},
+			items: items,
+		};
 	}
 }
