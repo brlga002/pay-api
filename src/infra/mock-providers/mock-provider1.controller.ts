@@ -24,7 +24,7 @@ const CreateChargeRequestSchema = z.object({
 	}),
 });
 
-export type CreateChargeRequest = z.infer<typeof CreateChargeRequestSchema>;
+type CreateChargeRequest = z.infer<typeof CreateChargeRequestSchema>;
 
 interface ChargeResponse {
 	id: string;
@@ -45,6 +45,7 @@ function simulateCardStatus(cardNumber: string): "authorized" | "failed" {
 
 @Controller("mock/provider1")
 export class MockProvider1Controller {
+	static readonly providerId = "mock-provider1-id";
 	private readonly logger = new Logger(MockProvider1Controller.name);
 	private readonly charges: ChargeResponse[] = [];
 
@@ -54,9 +55,7 @@ export class MockProvider1Controller {
 
 		const dto = CreateChargeRequestSchema.safeParse(body);
 		if (!dto.success) {
-			this.logger.error(
-				`Invalid request: ${dto.error.message}`,
-			);
+			this.logger.error(`Invalid request: ${dto.error.message}`);
 			throw new BadRequestException(dto.error);
 		}
 
@@ -64,7 +63,7 @@ export class MockProvider1Controller {
 		const now = new Date();
 
 		const charge: ChargeResponse = {
-			id: uuidv4(),
+			id: MockProvider1Controller.providerId,
 			createdAt: now.toISOString().split("T")[0],
 			status,
 			originalAmount: body.amount,

@@ -22,7 +22,7 @@ const CreateTransactionRequestSchema = z.object({
 	}),
 });
 
-export interface CreateTransactionRequest {
+interface CreateTransactionRequest {
 	amount: number;
 	currency: string;
 	statementDescriptor: string;
@@ -55,6 +55,8 @@ function simulateCardStatus(cardNumber: string): "paid" | "failed" {
 
 @Controller("mock/provider2")
 export class MockProvider2Controller {
+	static readonly providerId = "mock-provider2-id";
+
 	private readonly logger = new Logger(MockProvider2Controller.name);
 	private readonly transactions: TransactionResponse[] = [];
 
@@ -74,7 +76,7 @@ export class MockProvider2Controller {
 		const now = new Date();
 
 		const transaction: TransactionResponse = {
-			id: uuidv4(),
+			id: MockProvider2Controller.providerId,
 			date: now.toISOString().split("T")[0],
 			status,
 			amount: body.amount,
