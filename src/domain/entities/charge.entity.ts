@@ -67,24 +67,13 @@ export class Charge {
 		return payment;
 	}
 
-	authorize() {
-		this.status = PaymentStatus.AUTHORIZED;
-	}
-
-	fail() {
-		this.status = PaymentStatus.FAILED;
-	}
-
-	refund() {
+	refund(amount: number) {
 		if (!this.allowRefund()) throw new Error("Charge cannot be refunded");
-		const valueToRefund = this.currentAmount;
-		this.currentAmount = 0;
+		if (amount > this.currentAmount)
+			throw new Error("Refund amount is greater than current amount");
+
+		this.currentAmount -= amount;
 		this.status = PaymentStatus.REFUNDED;
-		return {
-			id: this.getProviderIdOrThrow(),
-			providerName: this.getProviderNameOrThrow(),
-			amount: valueToRefund,
-		};
 	}
 
 	cancelRefund(amount: number) {

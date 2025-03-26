@@ -14,7 +14,7 @@ export class RefundUseCase {
 		private readonly fallbackService: IFallbackPaymentService,
 	) {}
 
-	async execute(chargeId: string): Promise<Charge | null> {
+	async execute(chargeId: string, amount: number): Promise<Charge | null> {
 		this.logger.log(`Finding charge with id ${chargeId}`);
 		const charge = await this.chargeRepository.findById(chargeId);
 		if (!charge) {
@@ -27,14 +27,18 @@ export class RefundUseCase {
 		}
 
 		this.logger.log(`Refunding charge with id ${chargeId}`);
-		const refund = charge.refund();
-		await this.chargeRepository.save(charge);
+		charge.refund(amount);
+		await this.chargeRepository.update(charge);
 
-		const refundResult = await this.fallbackService.refundPayment(refund);
+		const refundResult = await this.fallbackService.refundPayment({
+			id: charge.getProviderIdOrThrow(),
+			providerName: charge.getProviderNameOrThrow(),
+			amount,
+		});
 		if (!refundResult.success) {
-			charge.cancelRefund(refund.amount);
-			await this.chargeRepository.save(charge);
+			charge.cancelRefund(amount);
+			await this.chargeRepository.update(charge);
 		}
-		return null;
+		return charge;
 	}
 }
