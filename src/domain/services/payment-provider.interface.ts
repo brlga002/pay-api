@@ -9,6 +9,7 @@ export interface PaymentProviderResponse {
 }
 
 export interface PaymentProviderInterface {
-	name: string;
+	providerName: string;
 	createCharge(data: Charge): Promise<PaymentProviderResponse>;
+	refundCharge(amount: number): Promise<{ success: boolean }>;
 }
