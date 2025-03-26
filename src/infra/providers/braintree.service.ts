@@ -40,7 +40,7 @@ interface TransactionResponse {
 @Injectable()
 export class BraintreeService implements PaymentProviderInterface {
 	private readonly logger = new Logger(BraintreeService.name);
-	readonly name = "braintree";
+	readonly providerName = "braintree";
 	private readonly baseUrl!: string;
 
 	constructor(
@@ -92,5 +92,27 @@ export class BraintreeService implements PaymentProviderInterface {
 			status: response.status,
 			cardId: response.cardId,
 		};
+	}
+
+	async refundCharge(
+		id: string,
+		amount: number,
+	): Promise<{ success: boolean }> {
+		await firstValueFrom<BraintreeCreateChargeRequest>(
+			this.httpService
+				.post<string, { amount: number }>(
+					`${this.baseUrl}/void/${id}`,
+					{ amount },
+					{ headers: { "request-id": this.requestContext.getRequestId() } },
+				)
+				.pipe(
+					map((response: AxiosResponse) => response.data),
+					catchError((error) => {
+						this.logger.error(error, "Error refunding charge");
+						throw error;
+					}),
+				),
+		);
+		return { success: true };
 	}
 }

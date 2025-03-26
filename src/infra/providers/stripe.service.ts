@@ -42,7 +42,7 @@ interface ChargeResponse {
 @Injectable()
 export class StripeService implements PaymentProviderInterface {
 	private readonly logger = new Logger(StripeService.name);
-	readonly name = "stripe";
+	readonly providerName = "stripe";
 	private readonly baseUrl!: string;
 
 	constructor(
@@ -91,8 +91,30 @@ export class StripeService implements PaymentProviderInterface {
 		);
 		return {
 			provider: new Provider(response.id, "stripe"),
-			status: response.status,
+			status: response.status === "authorized" ? "paid" : response.status,
 			cardId: response.cardId,
 		};
+	}
+
+	async refundCharge(
+		id: string,
+		amount: number,
+	): Promise<{ success: boolean }> {
+		await firstValueFrom<ChargeResponse>(
+			this.httpService
+				.post<string, { amount: number }>(
+					`${this.baseUrl}/refund/${id}`,
+					{ amount },
+					{ headers: { "request-id": this.requestContext.getRequestId() } },
+				)
+				.pipe(
+					map((response: AxiosResponse) => response.data),
+					catchError((error) => {
+						this.logger.error(error, "Error refunding charge");
+						throw error;
+					}),
+				),
+		);
+		return { success: true };
 	}
 }
