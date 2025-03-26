@@ -74,6 +74,7 @@ export class ChargePrismaRepository implements IChargeRepository {
 				providerId: payment.providerId,
 				providerName: payment.providerName,
 				status: payment.status,
+				currentAmount: payment.currentAmount,
 			},
 		});
 	}
