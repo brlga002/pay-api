@@ -11,5 +11,5 @@ export interface PaymentProviderResponse {
 export interface PaymentProviderInterface {
 	providerName: string;
 	createCharge(data: Charge): Promise<PaymentProviderResponse>;
-	refundCharge(amount: number): Promise<{ success: boolean }>;
+	refundCharge(id: string, amount: number): Promise<{ success: boolean }>;
 }

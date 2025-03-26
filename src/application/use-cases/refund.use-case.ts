@@ -27,15 +27,12 @@ export class RefundUseCase {
 		}
 
 		this.logger.log(`Refunding charge with id ${chargeId}`);
-		const { amount, providerId } = charge.refund();
+		const refund = charge.refund();
 		await this.chargeRepository.save(charge);
 
-		const refundResult = await this.fallbackService.refundPayment(
-			providerId,
-			amount,
-		);
+		const refundResult = await this.fallbackService.refundPayment(refund);
 		if (!refundResult.success) {
-			charge.cancelRefund(amount);
+			charge.cancelRefund(refund.amount);
 			await this.chargeRepository.save(charge);
 		}
 		return null;

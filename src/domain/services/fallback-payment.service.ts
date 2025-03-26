@@ -3,8 +3,9 @@ import { PaymentProviderResponse } from "@domain/services/payment-provider.inter
 
 export interface IFallbackPaymentService {
 	processPayment(charge: Charge): Promise<PaymentProviderResponse>;
-	refundPayment(
-		providerName: string,
-		amount: number,
-	): Promise<{ success: boolean }>;
+	refundPayment(props: {
+		id: string;
+		providerName: string;
+		amount: number;
+	}): Promise<{ success: boolean }>;
 }

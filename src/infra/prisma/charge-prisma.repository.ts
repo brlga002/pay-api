@@ -55,6 +55,7 @@ export class ChargePrismaRepository implements IChargeRepository {
 				paymentMethodInstallments: paymentMethod.installments,
 				paymentSourceType: payment.paymentSource.sourceType,
 				providerId: payment.providerId,
+				providerName: payment.providerName,
 				createdAt: payment.createdAt,
 			},
 		});
@@ -71,6 +72,7 @@ export class ChargePrismaRepository implements IChargeRepository {
 				paymentSourceType: payment.paymentSource?.sourceType,
 				paymentSourceId: payment.paymentSource?.id,
 				providerId: payment.providerId,
+				providerName: payment.providerName,
 				status: payment.status,
 			},
 		});

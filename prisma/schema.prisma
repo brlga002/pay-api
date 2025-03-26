@@ -33,6 +33,7 @@ model PrismaCharge {
   description               String
   status                    PaymentStatus
   providerId                String?
+  providerName              String?
   currentAmount             Float             @map("current_amount")
   paymentMethod             PaymentMethodType @map("payment_method_type")
   paymentMethodInstallments Int?              @map("payment_method_installments")

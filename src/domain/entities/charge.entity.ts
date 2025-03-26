@@ -14,7 +14,7 @@ interface ChargeProps {
 	status: PaymentStatus;
 	paymentMethod: Credit;
 	providerId?: string | null;
-	provider?: string | null;
+	providerName?: string | null;
 	currentAmount?: number;
 	paymentSource: {
 		sourceType: string;
@@ -35,7 +35,7 @@ export class Charge {
 	status: PaymentStatus;
 	readonly paymentMethod: Credit;
 	providerId: string | null;
-	provider: string | null;
+	providerName: string | null;
 	currentAmount: number;
 	paymentSource: {
 		sourceType: string;
@@ -55,7 +55,7 @@ export class Charge {
 		this.status = props.status;
 		this.paymentMethod = props.paymentMethod;
 		this.providerId = props.providerId ?? null;
-		this.provider = props.provider ?? null;
+		this.providerName = props.providerName ?? null;
 		this.currentAmount = props.currentAmount ?? props.amount;
 		this.paymentSource = props.paymentSource;
 		this.createdAt = props.createdAt ?? new Date();
@@ -80,7 +80,11 @@ export class Charge {
 		const valueToRefund = this.currentAmount;
 		this.currentAmount = 0;
 		this.status = PaymentStatus.REFUNDED;
-		return { amount: valueToRefund, providerId: this.getProviderIdOrThrow() };
+		return {
+			id: this.getProviderIdOrThrow(),
+			providerName: this.getProviderNameOrThrow(),
+			amount: valueToRefund,
+		};
 	}
 
 	cancelRefund(amount: number) {
@@ -99,7 +103,7 @@ export class Charge {
 
 	setProvider(provider: Provider) {
 		this.providerId = provider.id;
-		this.provider = provider.name;
+		this.providerName = provider.name;
 	}
 
 	isReadyToProcess() {
@@ -118,8 +122,13 @@ export class Charge {
 	}
 
 	getProviderIdOrThrow() {
-		if (!this.providerId) throw new Error("Provider not set");
+		if (!this.providerId) throw new Error("ProviderId not set");
 		return this.providerId;
+	}
+
+	getProviderNameOrThrow() {
+		if (!this.providerName) throw new Error("ProviderName not set");
+		return this.providerName;
 	}
 
 	toJSON() {
@@ -133,7 +142,7 @@ export class Charge {
 			status: this.status,
 			paymentMethod: this.paymentMethod.toJSON(),
 			providerId: this.providerId,
-			provider: this.provider,
+			providerName: this.providerName,
 			currentAmount: this.currentAmount,
 			paymentSource: {
 				id: this.paymentSource?.id,
