@@ -1,4 +1,11 @@
-import { BadRequestException, Body, Controller, Post } from "@nestjs/common";
+import {
+	BadRequestException,
+	Body,
+	Controller,
+	Get,
+	Param,
+	Post,
+} from "@nestjs/common";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 
@@ -18,9 +25,18 @@ const CreateChargeRequestSchema = z.object({
 	}),
 });
 
+const RefundRequestSchema = z.object({
+	amount: z.number().positive(),
+	id: z.string().uuid(),
+});
+
+const GetChargeRequestSchema = z.object({
+	id: z.string().uuid(),
+});
+
 type CreateChargeRequest = z.infer<typeof CreateChargeRequestSchema>;
 
-interface ChargeResponse {
+interface Charge {
 	id: string;
 	createdAt: string;
 	status: "authorized" | "failed" | "refunded";
@@ -39,19 +55,18 @@ function simulateCardStatus(cardNumber: string): "authorized" | "failed" {
 
 @Controller("mock/provider1")
 export class MockProvider1Controller {
-	static readonly providerId = "mock-provider1-id";
-	private readonly charges: ChargeResponse[] = [];
+	private readonly charges: Charge[] = [];
 
 	@Post("charges")
-	createCharge(@Body() body: CreateChargeRequest): ChargeResponse {
+	createCharge(@Body() body: CreateChargeRequest): Charge {
 		const dto = CreateChargeRequestSchema.safeParse(body);
 		if (!dto.success) throw new BadRequestException(dto.error);
 
 		const status = simulateCardStatus(body.paymentMethod.card.number);
 		const now = new Date();
 
-		const charge: ChargeResponse = {
-			id: MockProvider1Controller.providerId,
+		const charge: Charge = {
+			id: uuidv4(),
 			createdAt: now.toISOString().split("T")[0],
 			status,
 			originalAmount: body.amount,
@@ -61,6 +76,44 @@ export class MockProvider1Controller {
 			paymentMethod: "card",
 			cardId: uuidv4(),
 		};
+		this.charges.push(charge);
+		return charge;
+	}
+
+	@Post("refund/:id")
+	refund(
+		@Body() body: { amount: number },
+		@Param() param: { id: string },
+	): Charge {
+		const dto = RefundRequestSchema.safeParse({ ...body, ...param });
+		if (!dto.success) throw new BadRequestException(dto.error);
+
+		const charge = this.charges.find((c) => c.id === dto.data.id);
+		if (!charge)
+			throw new BadRequestException(`Charge with id ${dto.data.id} not found`);
+
+		if (charge.status !== "authorized")
+			throw new BadRequestException(
+				`Charge with id ${dto.data.id} is not authorized`,
+			);
+
+		if (dto.data.amount > charge.currentAmount)
+			throw new BadRequestException("Refund amount greater than charge amount");
+
+		charge.status = "refunded";
+		charge.currentAmount -= dto.data.amount;
+
+		return charge;
+	}
+
+	@Get("charges/:id")
+	getCharge(@Param() param: { id: string }): Charge {
+		const dto = GetChargeRequestSchema.safeParse(param);
+		if (!dto.success) throw new BadRequestException(dto.error);
+
+		const charge = this.charges.find((c) => c.id === dto.data.id);
+		if (!charge)
+			throw new BadRequestException(`Charge with id ${dto.data.id} not found`);
 
 		return charge;
 	}
