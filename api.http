@@ -8,7 +8,7 @@ Content-Type: application/json
 
 {
   "merchantId": "1323",
-  "orderId": "4565dwseedded5d",
+  "orderId": "4688",
   "amount": 1500,
   "currency": "BRL",
   "description": "Pedido #erro",

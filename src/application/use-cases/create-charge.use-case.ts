@@ -14,7 +14,6 @@ export class CreateChargeUseCase {
 	) {}
 
 	async execute(charge: Charge): Promise<Charge> {
-		console.log(this.logger);
 		const existingPayment = await this.ChargeRepository.find(
 			charge.merchantId,
 			charge.orderId,
