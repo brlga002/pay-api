@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
-import { FallbackPaymentService } from "src/infra/providers/fallback-payment.service";
 import { Charge } from "@domain/entities/charge.entity";
 import { IChargeRepository } from "@domain/repositories/payment.repository";
+import { IFallbackPaymentService } from "@domain/services/fallback-payment.service";
 
 @Injectable()
 export class CreateChargeUseCase {
@@ -10,7 +10,8 @@ export class CreateChargeUseCase {
 	constructor(
 		@Inject("IChargeRepository")
 		private readonly ChargeRepository: IChargeRepository,
-		private readonly fallbackService: FallbackPaymentService,
+		@Inject("IFallbackPaymentService")
+		private readonly fallbackService: IFallbackPaymentService,
 	) {}
 
 	async execute(charge: Charge): Promise<Charge> {
