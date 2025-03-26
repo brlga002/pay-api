@@ -24,4 +24,5 @@ export interface IChargeRepository {
 	find(merchantId: string, orderId: string): Promise<Charge | null>;
 	update(payment: Charge): Promise<void>;
 	list(props: ListChargesProps): Promise<ListChargesResponse>;
+	findById(chargeId: string): Promise<Charge | null>;
 }

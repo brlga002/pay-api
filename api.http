@@ -31,3 +31,6 @@ GET {{host}}/charges
 &merchantId=1323
 &orderId=4688
 &sort=asc
+
+### Consultar cobrança por ID
+GET {{host}}/charges/f72edda9-6646-45f6-80c6-ff3e30160cb3

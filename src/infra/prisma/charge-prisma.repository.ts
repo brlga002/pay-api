@@ -132,4 +132,24 @@ export class ChargePrismaRepository implements IChargeRepository {
 			items: items,
 		};
 	}
+
+	async findById(chargeId: string): Promise<Charge | null> {
+		const payment = await this.client.prismaCharge.findUnique({
+			where: {
+				id: chargeId,
+			},
+		});
+		if (!payment) return null;
+
+		return Charge.create({
+			...payment,
+			paymentMethod: new Credit({
+				installments: payment.paymentMethodInstallments || 1,
+			}),
+			paymentSource: {
+				...(payment.paymentSourceId && { id: payment.paymentSourceId }),
+				sourceType: payment.paymentSourceType,
+			},
+		});
+	}
 }

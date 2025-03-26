@@ -13,6 +13,7 @@ import { PrismaModule } from "@infra/prisma/prisma.module";
 import { MockModule } from "@infra/mock-providers/mock.module";
 import { BraintreeService } from "@infra/providers/braintree.service";
 import { ListChargesUseCase } from "@application/use-cases/list-charges.use-case";
+import { GetChargeUseCase } from "@application/use-cases/get-charge.use-case";
 
 @Module({
 	imports: [
@@ -29,6 +30,7 @@ import { ListChargesUseCase } from "@application/use-cases/list-charges.use-case
 		BraintreeService,
 		CreateChargeUseCase,
 		ListChargesUseCase,
+		GetChargeUseCase,
 		{
 			provide: APP_INTERCEPTOR,
 			useClass: RequestIdInterceptor,
