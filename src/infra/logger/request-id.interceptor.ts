@@ -26,7 +26,9 @@ export class RequestIdInterceptor implements NestInterceptor {
 				}
 
 				if (contextType === "http") {
-					const requestId = randomUUID();
+					const requestId =
+						context.switchToHttp().getRequest().headers["request-id"] ??
+						randomUUID();
 					this.requestContextService.setRequestId(requestId);
 				}
 
