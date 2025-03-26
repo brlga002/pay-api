@@ -1,19 +1,21 @@
 import { Module } from "@nestjs/common";
-import { APP_INTERCEPTOR } from "@nestjs/core";
-import { RequestIdInterceptor } from "./infra/logger/request-id.interceptor";
-import { RequestContextService } from "./infra/logger/request-context.service";
-import { AppService } from "./app.service";
-import { ChargeController } from "@infra/controllers/charge.controller";
 import { ConfigModule } from "@nestjs/config";
+import { HttpModule } from "@nestjs/axios";
+import { APP_INTERCEPTOR } from "@nestjs/core";
+import { CreateChargeUseCase } from "@application/use-cases/create-charge.use-case";
+import { ListChargesUseCase } from "@application/use-cases/list-charges.use-case";
+import { GetChargeUseCase } from "@application/use-cases/get-charge.use-case";
+import { RequestIdInterceptor } from "@infra/logger/request-id.interceptor";
+import { RequestContextService } from "@infra/logger/request-context.service";
+import { ChargeController } from "@infra/controllers/charge.controller";
 import { FallbackPaymentService } from "@infra/providers/fallback-payment.service";
 import { StripeService } from "@infra/providers/stripe.service";
-import { HttpModule } from "@nestjs/axios";
-import { CreateChargeUseCase } from "@application/use-cases/create-charge.use-case";
 import { PrismaModule } from "@infra/prisma/prisma.module";
 import { MockModule } from "@infra/mock-providers/mock.module";
 import { BraintreeService } from "@infra/providers/braintree.service";
-import { ListChargesUseCase } from "@application/use-cases/list-charges.use-case";
-import { GetChargeUseCase } from "@application/use-cases/get-charge.use-case";
+import { RefundController } from "@infra/controllers/refund.controller";
+import { AppService } from "./app.service";
+import { RefundUseCase } from "@application/use-cases/refund.use-case";
 
 @Module({
 	imports: [
@@ -22,7 +24,7 @@ import { GetChargeUseCase } from "@application/use-cases/get-charge.use-case";
 		PrismaModule,
 		MockModule,
 	],
-	controllers: [ChargeController],
+	controllers: [ChargeController, RefundController],
 	providers: [
 		AppService,
 		RequestContextService,
@@ -31,6 +33,7 @@ import { GetChargeUseCase } from "@application/use-cases/get-charge.use-case";
 		CreateChargeUseCase,
 		ListChargesUseCase,
 		GetChargeUseCase,
+		RefundUseCase,
 		{
 			provide: APP_INTERCEPTOR,
 			useClass: RequestIdInterceptor,
