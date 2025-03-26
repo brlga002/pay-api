@@ -8,7 +8,7 @@ import { ConfigModule } from "@nestjs/config";
 import { FallbackPaymentService } from "@infra/providers/fallback-payment.service";
 import { StripeService } from "@infra/providers/stripe.service";
 import { HttpModule } from "@nestjs/axios";
-import { ProcessPaymentUseCase } from "@application/use-cases/process-payment.use-case";
+import { CreateChargeUseCase } from "@application/use-cases/create-charge.use-case";
 import { PrismaModule } from "@infra/prisma/prisma.module";
 import { MockModule } from "@infra/mock-providers/mock.module";
 import { BraintreeService } from "@infra/providers/braintree.service";
@@ -26,7 +26,8 @@ import { BraintreeService } from "@infra/providers/braintree.service";
 		RequestContextService,
 		StripeService,
 		BraintreeService,
-		ProcessPaymentUseCase,
+		CreateChargeUseCase,
+
 		{
 			provide: APP_INTERCEPTOR,
 			useClass: RequestIdInterceptor,
