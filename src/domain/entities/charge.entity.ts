@@ -83,6 +83,11 @@ export class Charge {
 		return { amount: valueToRefund, providerId: this.getProviderIdOrThrow() };
 	}
 
+	cancelRefund(amount: number) {
+		this.currentAmount += amount;
+		this.status = PaymentStatus.PAID;
+	}
+
 	setPaymentSource(props: {
 		id: string;
 		status: PaymentStatus;
