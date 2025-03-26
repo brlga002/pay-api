@@ -95,7 +95,10 @@ export class Charge {
 	}
 
 	isReadyToProcess() {
-		return this.status === PaymentStatus.PENDING;
+		return (
+			this.status === PaymentStatus.PENDING ||
+			this.status === PaymentStatus.FAILED
+		);
 	}
 
 	toJSON() {
