@@ -1,10 +1,4 @@
-import {
-	BadRequestException,
-	Body,
-	Controller,
-	Logger,
-	Post,
-} from "@nestjs/common";
+import { BadRequestException, Body, Controller, Post } from "@nestjs/common";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 
@@ -46,18 +40,12 @@ function simulateCardStatus(cardNumber: string): "authorized" | "failed" {
 @Controller("mock/provider1")
 export class MockProvider1Controller {
 	static readonly providerId = "mock-provider1-id";
-	private readonly logger = new Logger(MockProvider1Controller.name);
 	private readonly charges: ChargeResponse[] = [];
 
 	@Post("charges")
 	createCharge(@Body() body: CreateChargeRequest): ChargeResponse {
-		this.logger.log(body, "CreateCharge request");
-
 		const dto = CreateChargeRequestSchema.safeParse(body);
-		if (!dto.success) {
-			this.logger.error(`Invalid request: ${dto.error.message}`);
-			throw new BadRequestException(dto.error);
-		}
+		if (!dto.success) throw new BadRequestException(dto.error);
 
 		const status = simulateCardStatus(body.paymentMethod.card.number);
 		const now = new Date();
@@ -74,13 +62,6 @@ export class MockProvider1Controller {
 			cardId: uuidv4(),
 		};
 
-		if (status === "failed") {
-			this.logger.error(charge, "Failed to create charge");
-			return charge;
-		}
-
-		this.charges.push(charge);
-		this.logger.log(charge, "Charge created successfully");
 		return charge;
 	}
 }

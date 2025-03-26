@@ -1,10 +1,4 @@
-import {
-	BadRequestException,
-	Body,
-	Controller,
-	Logger,
-	Post,
-} from "@nestjs/common";
+import { BadRequestException, Body, Controller, Post } from "@nestjs/common";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 
@@ -56,21 +50,14 @@ function simulateCardStatus(cardNumber: string): "paid" | "failed" {
 @Controller("mock/provider2")
 export class MockProvider2Controller {
 	static readonly providerId = "mock-provider2-id";
-
-	private readonly logger = new Logger(MockProvider2Controller.name);
 	private readonly transactions: TransactionResponse[] = [];
 
 	@Post("transactions")
 	createTransaction(
 		@Body() body: CreateTransactionRequest,
 	): TransactionResponse {
-		this.logger.log(body, "CreateTransaction request");
-
 		const dto = CreateTransactionRequestSchema.safeParse(body);
-		if (!dto.success) {
-			this.logger.error(`Invalid request: ${dto.error.message}`);
-			throw new BadRequestException(dto.error);
-		}
+		if (!dto.success) throw new BadRequestException(dto.error);
 
 		const status = simulateCardStatus(body.card.number);
 		const now = new Date();
@@ -87,13 +74,6 @@ export class MockProvider2Controller {
 			cardId: uuidv4(),
 		};
 
-		if (status === "failed") {
-			this.logger.error(transaction, "Failed to create transaction");
-			return transaction;
-		}
-
-		this.transactions.push(transaction);
-		this.logger.log(transaction, "Transaction created");
 		return transaction;
 	}
 }
