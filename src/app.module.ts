@@ -11,6 +11,7 @@ import { HttpModule } from "@nestjs/axios";
 import { ProcessPaymentUseCase } from "@application/use-cases/process-payment.use-case";
 import { PrismaModule } from "@infra/prisma/prisma.module";
 import { MockModule } from "@infra/mock-providers/mock.module";
+import { BraintreeService } from "@infra/providers/braintree.service";
 
 @Module({
 	imports: [
@@ -24,6 +25,7 @@ import { MockModule } from "@infra/mock-providers/mock.module";
 		AppService,
 		RequestContextService,
 		StripeService,
+		BraintreeService,
 		ProcessPaymentUseCase,
 		{
 			provide: APP_INTERCEPTOR,
@@ -31,9 +33,9 @@ import { MockModule } from "@infra/mock-providers/mock.module";
 		},
 		{
 			provide: FallbackPaymentService,
-			useFactory: (provide: StripeService) =>
-				new FallbackPaymentService([provide]),
-			inject: [StripeService],
+			useFactory: (stripe: StripeService, braintree: BraintreeService) =>
+				new FallbackPaymentService([stripe, braintree]),
+			inject: [StripeService, BraintreeService],
 		},
 	],
 })
