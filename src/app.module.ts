@@ -12,6 +12,7 @@ import { CreateChargeUseCase } from "@application/use-cases/create-charge.use-ca
 import { PrismaModule } from "@infra/prisma/prisma.module";
 import { MockModule } from "@infra/mock-providers/mock.module";
 import { BraintreeService } from "@infra/providers/braintree.service";
+import { ListChargesUseCase } from "@application/use-cases/list-charges.use-case";
 
 @Module({
 	imports: [
@@ -27,7 +28,7 @@ import { BraintreeService } from "@infra/providers/braintree.service";
 		StripeService,
 		BraintreeService,
 		CreateChargeUseCase,
-
+		ListChargesUseCase,
 		{
 			provide: APP_INTERCEPTOR,
 			useClass: RequestIdInterceptor,

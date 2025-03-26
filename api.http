@@ -23,3 +23,11 @@ Content-Type: application/json
     }    
   }
 }
+
+### Listar cobranças
+GET {{host}}/charges
+?page=2
+&limit=8
+&merchantId=1323
+&orderId=4688
+&sort=asc

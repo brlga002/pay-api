@@ -1,14 +1,26 @@
-import { Controller, Post, Body, BadRequestException } from "@nestjs/common";
+import {
+	Controller,
+	Post,
+	Body,
+	BadRequestException,
+	Get,
+	Query,
+} from "@nestjs/common";
 import { Charge } from "@domain/entities/charge.entity";
 import { PaymentStatus } from "src/domain/enums/payment-status.enum";
 import { Card } from "src/domain/entities/card.entity";
 import { CreateChargeUseCase } from "@application/use-cases/create-charge.use-case";
 import { CreateChargeSchema } from "./dto/create-charge.dto";
 import { Credit } from "@domain/entities/credt.entity";
+import { ListChargesUseCase } from "@application/use-cases/list-charges.use-case";
+import { ListChargeSchema } from "./dto/list-charges.dto";
 
 @Controller("charges")
 export class ChargeController {
-	constructor(private readonly createPaymentUseCase: CreateChargeUseCase) {}
+	constructor(
+		private readonly createPaymentUseCase: CreateChargeUseCase,
+		private readonly listChargesUseCase: ListChargesUseCase,
+	) {}
 
 	@Post()
 	async create(@Body() body: unknown): Promise<Charge> {
@@ -40,5 +52,13 @@ export class ChargeController {
 		});
 
 		return this.createPaymentUseCase.execute(payment);
+	}
+
+	@Get()
+	async list(@Query() query: unknown) {
+		const dto = ListChargeSchema.safeParse(query);
+		if (!dto.success) throw new BadRequestException(dto.error.errors);
+
+		return this.listChargesUseCase.execute(dto.data);
 	}
 }
