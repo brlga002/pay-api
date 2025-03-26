@@ -31,6 +31,9 @@ export class Card extends PaymentMethod {
 	}
 
 	set number(value: string) {
+		if (!value || value === "")
+			throw new DomainError("Invalid card number, must not be empty");
+
 		const sanitizedValue = value.replace(/\s/g, "");
 		if (!/^\d+$/.test(sanitizedValue))
 			throw new DomainError("Invalid card number, must contain only digits");
