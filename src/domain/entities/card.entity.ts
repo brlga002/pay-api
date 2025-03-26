@@ -1,5 +1,3 @@
-import { PaymentMethod } from "@domain/entities/payment-method";
-import { PaymentType } from "@domain/enums/payment-type.enum";
 import { DomainError } from "@domain/exceptions/DomainError";
 
 interface CardProps {
@@ -7,23 +5,19 @@ interface CardProps {
 	holderName: string;
 	cvv: string;
 	expirationDate: string;
-	installments: number;
 }
 
-export class Card extends PaymentMethod {
+export class Card {
 	_number!: string;
 	_holderName!: string;
 	_cvv!: string;
 	_expirationDate!: string;
-	_installments!: number;
 
 	constructor(props: CardProps) {
-		super(PaymentType.CREDIT);
 		this.number = props.number;
 		this.holderName = props.holderName;
 		this.cvv = props.cvv;
 		this.expirationDate = props.expirationDate;
-		this.installments = props.installments;
 	}
 
 	get number() {
@@ -107,17 +101,6 @@ export class Card extends PaymentMethod {
 		this._expirationDate = `${String(month).padStart(2, "0")}/${year}`;
 	}
 
-	get installments() {
-		return this._installments;
-	}
-
-	set installments(value: number) {
-		if (value < 1)
-			throw new DomainError("Invalid installments, must be greater than 0");
-
-		this._installments = value;
-	}
-
 	static luhnCheck(value: string): boolean {
 		const digits = value.split("").map(Number);
 		const parity = digits.length % 2;
@@ -135,13 +118,6 @@ export class Card extends PaymentMethod {
 	}
 
 	toJSON() {
-		return {
-			...super.toJSON(),
-			number: this.number,
-			holderName: this.holderName,
-			cvv: this.cvv,
-			expirationDate: this.expirationDate,
-			installments: this._installments,
-		};
+		return null;
 	}
 }

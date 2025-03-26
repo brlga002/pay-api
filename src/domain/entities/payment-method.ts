@@ -1,11 +1,14 @@
 import { enumValidator } from "@domain/enums/enum-validator";
 import { PaymentType } from "@domain/enums/payment-type.enum";
 
+interface PaymentMethodProps {
+	paymentType: PaymentType;
+}
 export class PaymentMethod {
 	_paymentType!: PaymentType;
 
-	constructor(paymentType: PaymentType) {
-		this.paymentType = paymentType;
+	constructor(props: PaymentMethodProps) {
+		this.paymentType = props.paymentType;
 	}
 
 	get paymentType() {
