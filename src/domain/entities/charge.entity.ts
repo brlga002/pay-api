@@ -75,9 +75,12 @@ export class Charge {
 		this.status = PaymentStatus.FAILED;
 	}
 
-	refund(amount: number) {
-		this.currentAmount -= amount;
+	refund() {
+		if (!this.allowRefund()) throw new Error("Charge cannot be refunded");
+		const valueToRefund = this.currentAmount;
+		this.currentAmount = 0;
 		this.status = PaymentStatus.REFUNDED;
+		return { amount: valueToRefund, providerId: this.getProviderIdOrThrow() };
 	}
 
 	setPaymentSource(props: {
@@ -99,6 +102,19 @@ export class Charge {
 			this.status === PaymentStatus.PENDING ||
 			this.status === PaymentStatus.FAILED
 		);
+	}
+
+	allowRefund() {
+		return (
+			this.status === PaymentStatus.PAID &&
+			this.currentAmount > 0 &&
+			this.providerId !== null
+		);
+	}
+
+	getProviderIdOrThrow() {
+		if (!this.providerId) throw new Error("Provider not set");
+		return this.providerId;
 	}
 
 	toJSON() {
