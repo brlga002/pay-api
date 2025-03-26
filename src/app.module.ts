@@ -36,7 +36,7 @@ import { GetChargeUseCase } from "@application/use-cases/get-charge.use-case";
 			useClass: RequestIdInterceptor,
 		},
 		{
-			provide: FallbackPaymentService,
+			provide: "IFallbackPaymentService",
 			useFactory: (stripe: StripeService, braintree: BraintreeService) =>
 				new FallbackPaymentService([stripe, braintree]),
 			inject: [StripeService, BraintreeService],
