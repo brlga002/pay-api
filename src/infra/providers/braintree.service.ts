@@ -48,8 +48,11 @@ export class BraintreeService implements PaymentProviderInterface {
 		private readonly configService: ConfigService,
 		private readonly requestContext: RequestContextService,
 	) {
-		const port = this.configService.get<string>("BRAINTREE_PORT", "3000");
-		this.baseUrl = `http://localhost:${port}/mock/provider2`;
+		const port = this.configService.get<string>("PORT", "3000");
+		this.baseUrl = this.configService.get<string>(
+			"PROVIDER_2_URL",
+			`http://localhost:${port}/mock/provider2`,
+		);
 	}
 
 	async createCharge(data: Charge): Promise<PaymentProviderResponse> {

@@ -50,8 +50,11 @@ export class StripeService implements PaymentProviderInterface {
 		private readonly configService: ConfigService,
 		private readonly requestContext: RequestContextService,
 	) {
-		const port = this.configService.get<string>("STRIPE_PORT", "3000");
-		this.baseUrl = `http://localhost:${port}/mock/provider1`;
+		const port = this.configService.get<string>("PORT", "3000");
+		this.baseUrl = this.configService.get<string>(
+			"PROVIDER_1_URL",
+			`http://localhost:${port}/mock/provider1`,
+		);
 	}
 
 	async createCharge(data: Charge): Promise<PaymentProviderResponse> {
