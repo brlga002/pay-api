@@ -1,14 +1,17 @@
-@host=http://localhost:3000
+@host=http://localhost:3002
 
-# ❌ "4000000000000002" - Simula falha no primeiro provedor - aprovado pelo segundo provedor
-# ✅ exemplo de cartão de test sucesso - "4111111111111111"
-### Criar uma cobrança
+###
+# 💳 Criar uma cobrança
+# 
+# ❌ Número "4000000000000002" simula falha no primeiro provedor e força fallback para o segundo
+# ✅ Número "4111111111111111" simula sucesso direto no primeiro provedor
+###
 POST {{host}}/charges
 Content-Type: application/json
 
 {
   "merchantId": "1323",
-  "orderId": "468ssedd8",
+  "orderId": "789456",
   "amount": 1500,
   "currency": "BRL",
   "description": "Pedido #erro",
@@ -16,7 +19,7 @@ Content-Type: application/json
     "type": "credit",
     "installments": 1,
     "card": {
-      "number": "4000000000009995",
+      "number": "4000000000000002",
       "holderName": "Erro",
       "cvv": "123",
       "expirationDate": "12/2025"
@@ -24,7 +27,10 @@ Content-Type: application/json
   }
 }
 
-### Listar cobranças
+###
+# 📋 Listar cobranças
+# Paginação, filtro por merchantId, orderId , ordenação e limite  
+###
 GET {{host}}/charges
 ?page=1
 # &limit=8
@@ -32,11 +38,14 @@ GET {{host}}/charges
 # &orderId=4688
 # &sort=asc
 
-### Consultar cobrança por ID
+###
+# 🔍 Consultar cobrança por ID
+###
 GET {{host}}/charges/5b6289c0-28c9-4398-90c5-cd3fc0d5da62
 
-
-### Estornar cobrança 
+###
+# 🔄 Estornar cobrança
+###
 POST {{host}}/refunds/3587b968-c975-4c05-9ad0-04dd37760606
 Content-Type: application/json
 
