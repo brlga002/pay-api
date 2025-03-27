@@ -53,7 +53,6 @@ export class ChargeController {
 				}),
 			},
 			currentAmount: dto.data.amount,
-			createdAt: new Date(),
 		});
 
 		return this.createPaymentUseCase.execute(payment);
