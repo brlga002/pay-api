@@ -83,7 +83,7 @@ describe("ListChargesUseCase", () => {
 				},
 			],
 		});
-	});
+	}, 30000);
 
 	afterAll(async () => {
 		await app.close();

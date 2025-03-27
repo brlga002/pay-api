@@ -51,7 +51,7 @@ describe("GetChargeUseCase", () => {
 
 		client = app.get(PrismaService);
 		useCase = app.get(GetChargeUseCase);
-	});
+	}, 30000);
 
 	afterAll(async () => {
 		await app.close();

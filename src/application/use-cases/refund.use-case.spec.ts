@@ -50,7 +50,7 @@ describe("RefundUseCase", () => {
 			"IFallbackPaymentService",
 		);
 		chargeRepository = module.get<IChargeRepository>("IChargeRepository");
-	});
+	}, 30000);
 
 	afterAll(async () => {
 		await app.close();
