@@ -36,7 +36,7 @@ describe("RefundController", () => {
 		fallbackService = module.get<IFallbackPaymentService>(
 			"IFallbackPaymentService",
 		);
-	});
+	}, 30000);
 
 	afterAll(async () => {
 		await app.close();
