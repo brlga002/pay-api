@@ -140,6 +140,18 @@ describe("Card", () => {
 		}).toThrow("Card is expired");
 	});
 
+	it("should throw an error if the card number is empty", () => {
+		const pastYear = new Date().getFullYear() - 1;
+		expect(() => {
+			new Card({
+				number: "",
+				holderName: "João",
+				cvv: "123",
+				expirationDate: `01/${pastYear}`,
+			});
+		}).toThrow("Invalid card number, must not be empty");
+	});
+
 	it("should return JSON correctly with all data", () => {
 		const card = new Card({
 			number: "4111111111111111",

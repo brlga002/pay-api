@@ -3,6 +3,7 @@ import { Provider } from "./provider.entity";
 import { Card } from "./card.entity";
 import { Currency } from "@domain/enums/currency.enum";
 import { Credit } from "./credt.entity";
+import { DomainError } from "@domain/exceptions/DomainError";
 
 export interface ChargeProps {
 	id: string;
@@ -68,9 +69,9 @@ export class Charge {
 	}
 
 	refund(amount: number) {
-		if (!this.allowRefund()) throw new Error("Charge cannot be refunded");
+		if (!this.allowRefund()) throw new DomainError("Charge cannot be refunded");
 		if (amount > this.currentAmount)
-			throw new Error("Refund amount is greater than current amount");
+			throw new DomainError("Refund amount is greater than current amount");
 
 		this.currentAmount -= amount;
 		this.status = PaymentStatus.REFUNDED;
@@ -111,12 +112,12 @@ export class Charge {
 	}
 
 	getProviderIdOrThrow() {
-		if (!this.providerId) throw new Error("ProviderId not set");
+		if (!this.providerId) throw new DomainError("ProviderId not set");
 		return this.providerId;
 	}
 
 	getProviderNameOrThrow() {
-		if (!this.providerName) throw new Error("ProviderName not set");
+		if (!this.providerName) throw new DomainError("ProviderName not set");
 		return this.providerName;
 	}
 
