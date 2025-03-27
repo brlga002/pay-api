@@ -35,7 +35,11 @@ export class RefundUseCase {
 			providerName: charge.getProviderNameOrThrow(),
 			amount,
 		});
+
 		if (!refundResult.success) {
+			this.logger.log(
+				`Refund failed for charge with id ${chargeId}. Cancelling refund`,
+			);
 			charge.cancelRefund(amount);
 			await this.chargeRepository.update(charge);
 		}
