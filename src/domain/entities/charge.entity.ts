@@ -4,7 +4,7 @@ import { Card } from "./card.entity";
 import { Currency } from "@domain/enums/currency.enum";
 import { Credit } from "./credt.entity";
 
-interface ChargeProps {
+export interface ChargeProps {
 	id: string;
 	merchantId: string;
 	orderId: string;
@@ -96,10 +96,10 @@ export class Charge {
 	}
 
 	isReadyToProcess() {
-		return (
+		const validStatus =
 			this.status === PaymentStatus.PENDING ||
-			this.status === PaymentStatus.FAILED
-		);
+			this.status === PaymentStatus.FAILED;
+		return validStatus && !this.providerId;
 	}
 
 	allowRefund() {

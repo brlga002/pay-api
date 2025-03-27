@@ -9,20 +9,20 @@ export class CreateChargeUseCase {
 
 	constructor(
 		@Inject("IChargeRepository")
-		private readonly ChargeRepository: IChargeRepository,
+		private readonly chargeRepository: IChargeRepository,
 		@Inject("IFallbackPaymentService")
 		private readonly fallbackService: IFallbackPaymentService,
 	) {}
 
 	async execute(charge: Charge): Promise<Charge> {
-		const existingPayment = await this.ChargeRepository.find(
+		const existingPayment = await this.chargeRepository.find(
 			charge.merchantId,
 			charge.orderId,
 		);
 
 		if (!existingPayment) {
 			this.logger.log(`Creating new charge ${charge.id}`);
-			await this.ChargeRepository.save(charge);
+			await this.chargeRepository.save(charge);
 		} else {
 			this.logger.log(`Charge ${existingPayment.id} already exists`);
 			if (!existingPayment.isReadyToProcess()) {
@@ -31,6 +31,7 @@ export class CreateChargeUseCase {
 				);
 				return existingPayment;
 			}
+			charge.id = existingPayment.id;
 		}
 
 		const response = await this.fallbackService.processPayment(charge);
@@ -39,7 +40,7 @@ export class CreateChargeUseCase {
 			id: response.cardId,
 			status: response.status,
 		});
-		await this.ChargeRepository.update(charge);
+		await this.chargeRepository.update(charge);
 
 		return charge;
 	}
