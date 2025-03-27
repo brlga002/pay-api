@@ -62,6 +62,8 @@ A API estará disponível em: `http://localhost:3000`
 
 ## 🧪 Testes
 
+Coverage:
+
 ```bash
 # Execute os testes com cobertura
 npm run test
@@ -69,6 +71,8 @@ npm run test
 # Execute os testes com coverage report
 npm run test:cov
 ```
+
+![alt text](image.png)
 
 ## 📌 Endpoints
 
