@@ -89,7 +89,9 @@
 			"/node_modules/",
 			"/test/",
 			"/src/main.ts",
-			"/src/infra/mock-providers/"
+			"/src/infra/mock-providers/",
+			"/src/infra/logger/",
+			"/src/app.module.ts"
 		]
 	}
 }
