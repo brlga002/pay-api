@@ -21,7 +21,7 @@ import { createMockCharge } from "test/mocks/create-mock-charge";
 describe("CreateChargeUseCase", () => {
 	let app: INestApplication;
 	let container: StartedTestContainer;
-	let prismaClient!: PrismaService;
+	let client!: PrismaService;
 	let useCase: CreateChargeUseCase;
 	let fallbackService: IFallbackPaymentService;
 	let chargeRepository: IChargeRepository;
@@ -54,7 +54,7 @@ describe("CreateChargeUseCase", () => {
 
 		app = module.createNestApplication();
 		await app.init();
-		prismaClient = app.get(PrismaService);
+		client = app.get(PrismaService);
 		useCase = module.get(CreateChargeUseCase);
 		fallbackService = module.get<IFallbackPaymentService>(
 			"IFallbackPaymentService",
@@ -70,7 +70,7 @@ describe("CreateChargeUseCase", () => {
 			paymentSourceType: "card",
 			paymentMethod: PaymentType.CREDIT,
 		};
-		await prismaClient.prismaCharge.createMany({
+		await client.prismaCharge.createMany({
 			data: [
 				{
 					...input,
