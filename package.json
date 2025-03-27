@@ -88,7 +88,8 @@
 		"coveragePathIgnorePatterns": [
 			"/node_modules/",
 			"/test/",
-			"/src/main.ts"
+			"/src/main.ts",
+			"/src/infra/mock-providers/"
 		]
 	}
 }
