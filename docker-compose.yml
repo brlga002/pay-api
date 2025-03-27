@@ -6,12 +6,14 @@ services:
     container_name: pay_api_app    
     depends_on:
       - db
-    environment:
-      DATABASE_URL: postgres://user:password@db:5432/database
+    environment:      
+      DB_URL: postgres://user:password@db:5432/database
     ports:
-      - "${APP_PORT}:3000"
-    command: npm run start:dev
-
+      - "${PORT}:${PORT}"
+    volumes:
+      - .:/app      
+    command: >
+      sh -c "npm run prisma:db && npm run start:dev"
   db:
     image: postgres:15
     container_name: pay_api_postgres
