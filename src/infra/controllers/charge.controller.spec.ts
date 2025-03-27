@@ -55,7 +55,7 @@ describe("ChargeController", () => {
 		fallbackService = module.get<IFallbackPaymentService>(
 			"IFallbackPaymentService",
 		);
-	});
+	}, 30000);
 
 	afterAll(async () => {
 		await app.close();
@@ -120,6 +120,17 @@ describe("ChargeController", () => {
 			});
 	});
 
+	it("POST /charges should return 400 when payload is invalid", () => {
+		return request(app.getHttpServer())
+			.post("/charges")
+			.send({})
+			.expect(400)
+			.expect(({ body }) => {
+				expect(body.message).toBeDefined();
+				expect(body.message.length).toBeGreaterThan(0);
+			});
+	});
+
 	it("GET /charges/:id should return the charge", async () => {
 		const charge = await client.prismaCharge.create({
 			select: { id: true },
@@ -174,6 +185,15 @@ describe("ChargeController", () => {
 			.expect(404);
 	});
 
+	it("GET /charges/:id should return 400 when param is invalid", () => {
+		return request(app.getHttpServer())
+			.get("/charges/123")
+			.expect(400)
+			.expect(({ body }) => {
+				expect(body.message).toBeDefined();
+			});
+	});
+
 	it("GET /charges should return a list of charges", async () => {
 		return request(app.getHttpServer())
 			.get("/charges")
@@ -194,6 +214,16 @@ describe("ChargeController", () => {
 			.expect(200)
 			.expect(({ body }) => {
 				expect(body.items).toHaveLength(0);
+			});
+	});
+
+	it("GET /charges should return 400 when query is invalid", () => {
+		return request(app.getHttpServer())
+			.get("/charges")
+			.query({ limit: 101 })
+			.expect(400)
+			.expect(({ body }) => {
+				expect(body.message).toBeDefined();
 			});
 	});
 });
