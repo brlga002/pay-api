@@ -23,7 +23,7 @@ export interface ChargeProps {
 		card?: Card;
 	};
 	createdAt?: Date;
-	updateAt?: Date | null;
+	updatedAt?: Date | null;
 }
 
 export class Charge {
@@ -44,7 +44,7 @@ export class Charge {
 		card?: Card;
 	};
 	readonly createdAt: Date;
-	updateAt?: Date | null;
+	updatedAt?: Date | null;
 
 	private constructor(props: ChargeProps) {
 		this.id = props.id;
@@ -60,7 +60,7 @@ export class Charge {
 		this.currentAmount = props.currentAmount ?? props.amount;
 		this.paymentSource = props.paymentSource;
 		this.createdAt = props.createdAt ?? new Date();
-		this.updateAt = props.updateAt ?? null;
+		this.updatedAt = props.updatedAt ?? null;
 	}
 
 	static create(props: ChargeProps) {
@@ -139,7 +139,7 @@ export class Charge {
 				sourceType: this.paymentSource.sourceType,
 			},
 			createdAt: this.createdAt,
-			updateAt: this.updateAt,
+			updatedAt: this.updatedAt,
 		};
 	}
 }
