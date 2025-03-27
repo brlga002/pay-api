@@ -1,6 +1,7 @@
 import { FallbackPaymentService } from "./fallback-payment.service";
 import { Charge } from "@domain/entities/charge.entity";
 import { PaymentProviderInterface } from "@domain/services/payment-provider.interface";
+import { Logger } from "@nestjs/common";
 
 const createMockProvider = (
 	name: string,
@@ -131,5 +132,27 @@ describe("FallbackPaymentService", () => {
 				providerName: "A",
 			}),
 		).rejects.toThrow("Refund failed with provider 'A'");
+	});
+
+	it("should log warning and return false if refund fails but does not throw", async () => {
+		const refundProvider = createMockProvider("A", {
+			refundCharge: jest.fn().mockResolvedValue({ success: false }),
+		});
+
+		const warnSpy = jest.spyOn(Logger.prototype, "warn").mockImplementation();
+
+		service = new FallbackPaymentService([refundProvider]);
+
+		const result = await service.refundPayment({
+			id: "charge-1",
+			amount: 100,
+			providerName: "A",
+		});
+
+		expect(result.success).toBe(false);
+		expect(refundProvider.refundCharge).toHaveBeenCalledWith("charge-1", 100);
+		expect(warnSpy).toHaveBeenCalledWith(
+			`Refund of 100 failed using provider 'A'`,
+		);
 	});
 });
