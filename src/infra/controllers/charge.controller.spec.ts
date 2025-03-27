@@ -15,6 +15,7 @@ import { CreateChargeSchema } from "./dto/create-charge.dto";
 import { Currency } from "@domain/enums/currency.enum";
 import { PaymentType } from "@domain/enums/payment-type.enum";
 import { PaymentStatus } from "@domain/enums/payment-status.enum";
+import { v4 as uuidv4 } from "uuid";
 
 describe("ChargeController", () => {
 	let app: INestApplication;
@@ -61,7 +62,7 @@ describe("ChargeController", () => {
 		await container.stop();
 	});
 
-	it("should  not create a charge with invalid input", () => {
+	it("should not validate invalid input", () => {
 		const invalidInput = {};
 		const resultCreate = CreateChargeSchema.safeParse(invalidInput);
 
@@ -166,6 +167,13 @@ describe("ChargeController", () => {
 			});
 	});
 
+	it("GET /charges/:id should return 404 for non-existent charge", () => {
+		const nonExistentId = uuidv4();
+		return request(app.getHttpServer())
+			.get(`/charges/${nonExistentId}`)
+			.expect(404);
+	});
+
 	it("GET /charges should return a list of charges", async () => {
 		return request(app.getHttpServer())
 			.get("/charges")
@@ -176,6 +184,16 @@ describe("ChargeController", () => {
 				expect(body.meta).toBeDefined();
 				expect(body.items).toBeDefined();
 				expect(body.items.length).toBe(1);
+			});
+	});
+
+	it("GET /charges should return empty list if no matches", () => {
+		return request(app.getHttpServer())
+			.get("/charges")
+			.query({ merchantId: "merchant-x" })
+			.expect(200)
+			.expect(({ body }) => {
+				expect(body.items).toHaveLength(0);
 			});
 	});
 });
