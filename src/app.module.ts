@@ -14,7 +14,6 @@ import { PrismaModule } from "@infra/prisma/prisma.module";
 import { MockModule } from "@infra/mock-providers/mock.module";
 import { BraintreeService } from "@infra/providers/braintree.service";
 import { RefundController } from "@infra/controllers/refund.controller";
-import { AppService } from "./app.service";
 import { RefundUseCase } from "@application/use-cases/refund.use-case";
 
 @Module({
@@ -26,7 +25,6 @@ import { RefundUseCase } from "@application/use-cases/refund.use-case";
 	],
 	controllers: [ChargeController, RefundController],
 	providers: [
-		AppService,
 		RequestContextService,
 		StripeService,
 		BraintreeService,
