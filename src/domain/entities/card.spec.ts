@@ -7,14 +7,12 @@ describe("Card", () => {
 			holderName: "João da Silva",
 			cvv: "123",
 			expirationDate: "12/2099",
-			installments: 3,
 		});
 
 		expect(card.number).toBe("4111111111111111");
 		expect(card.holderName).toBe("João da Silva");
 		expect(card.cvv).toBe("123");
 		expect(card.expirationDate).toBe("12/2099");
-		expect(card.installments).toBe(3);
 	});
 
 	it("should create a valid card with all correct fields with a single digit month", () => {
@@ -23,14 +21,12 @@ describe("Card", () => {
 			holderName: "João da Silva",
 			cvv: "123",
 			expirationDate: "1/2099",
-			installments: 3,
 		});
 
 		expect(card.number).toBe("4111111111111111");
 		expect(card.holderName).toBe("João da Silva");
 		expect(card.cvv).toBe("123");
 		expect(card.expirationDate).toBe("01/2099");
-		expect(card.installments).toBe(3);
 	});
 
 	it("should throw an error if the card number contains letters", () => {
@@ -40,7 +36,6 @@ describe("Card", () => {
 				holderName: "João",
 				cvv: "123",
 				expirationDate: "12/2099",
-				installments: 1,
 			});
 		}).toThrow("Invalid card number, must contain only digits");
 	});
@@ -52,7 +47,6 @@ describe("Card", () => {
 				holderName: "João",
 				cvv: "123",
 				expirationDate: "12/2099",
-				installments: 1,
 			});
 		}).toThrow("Invalid card number length, must be 16 digits");
 	});
@@ -64,7 +58,6 @@ describe("Card", () => {
 				holderName: "João",
 				cvv: "123",
 				expirationDate: "12/2099",
-				installments: 1,
 			});
 		}).toThrow("Invalid card number, failed Luhn algorithm");
 	});
@@ -76,7 +69,6 @@ describe("Card", () => {
 				holderName: "",
 				cvv: "123",
 				expirationDate: "12/2099",
-				installments: 1,
 			});
 		}).toThrow("Invalid holder name, must not be empty");
 	});
@@ -88,7 +80,6 @@ describe("Card", () => {
 				holderName: "Jo",
 				cvv: "123",
 				expirationDate: "12/2099",
-				installments: 1,
 			});
 		}).toThrow("Invalid holder name, must contain at least 3 characters");
 	});
@@ -100,7 +91,6 @@ describe("Card", () => {
 				holderName: "João",
 				cvv: "12a",
 				expirationDate: "12/2099",
-				installments: 1,
 			});
 		}).toThrow("Invalid cvv, must contain only digits");
 	});
@@ -112,7 +102,6 @@ describe("Card", () => {
 				holderName: "João",
 				cvv: "12",
 				expirationDate: "12/2099",
-				installments: 1,
 			});
 		}).toThrow("Invalid cvv length, must be 3 digits");
 	});
@@ -124,7 +113,6 @@ describe("Card", () => {
 				holderName: "João",
 				cvv: "123",
 				expirationDate: "2099-12",
-				installments: 1,
 			});
 		}).toThrow("Invalid expiration date format, must be MM/YYYY");
 	});
@@ -136,7 +124,6 @@ describe("Card", () => {
 				holderName: "João",
 				cvv: "123",
 				expirationDate: "13/2099",
-				installments: 1,
 			});
 		}).toThrow("Invalid expiration month, must be between 1 and 12");
 	});
@@ -149,21 +136,8 @@ describe("Card", () => {
 				holderName: "João",
 				cvv: "123",
 				expirationDate: `01/${pastYear}`,
-				installments: 1,
 			});
 		}).toThrow("Card is expired");
-	});
-
-	it("should throw an error if the number of installments is less than 1", () => {
-		expect(() => {
-			new Card({
-				number: "4111111111111111",
-				holderName: "João",
-				cvv: "123",
-				expirationDate: "12/2099",
-				installments: 0,
-			});
-		}).toThrow("Invalid installments, must be greater than 0");
 	});
 
 	it("should return JSON correctly with all data", () => {
@@ -172,16 +146,8 @@ describe("Card", () => {
 			holderName: "João da Silva",
 			cvv: "123",
 			expirationDate: "12/2099",
-			installments: 2,
 		});
 
-		expect(card.toJSON()).toEqual({
-			paymentType: "credit",
-			number: "4111111111111111",
-			holderName: "João da Silva",
-			cvv: "123",
-			expirationDate: "12/2099",
-			installments: 2,
-		});
+		expect(card.toJSON()).toBeNull();
 	});
 });

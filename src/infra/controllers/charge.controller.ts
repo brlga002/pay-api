@@ -9,8 +9,8 @@ import {
 	NotFoundException,
 } from "@nestjs/common";
 import { Charge } from "@domain/entities/charge.entity";
-import { PaymentStatus } from "src/domain/enums/payment-status.enum";
-import { Card } from "src/domain/entities/card.entity";
+import { PaymentStatus } from "@domain/enums/payment-status.enum";
+import { Card } from "@domain/entities/card.entity";
 import { CreateChargeUseCase } from "@application/use-cases/create-charge.use-case";
 import { CreateChargeSchema } from "./dto/create-charge.dto";
 import { Credit } from "@domain/entities/credt.entity";

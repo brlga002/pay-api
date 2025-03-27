@@ -31,6 +31,7 @@
 		"pino-pretty": "^13.0.0",
 		"reflect-metadata": "^0.2.2",
 		"rxjs": "^7.8.1",
+		"testcontainers": "^10.23.0",
 		"uuid": "^11.1.0",
 		"zod": "^3.24.2"
 	},
@@ -66,6 +67,9 @@
 		"moduleNameMapper": {
 			"@domain/(.+)": "<rootDir>/src/domain/$1",
 			"@providers/(.+)": "<rootDir>/src/providers/$1",
+			"@infra/(.+)": "<rootDir>/src/infra/$1",
+			"@application/(.+)": "<rootDir>/src/application/$1",
+			"@src/(.+)": "<rootDir>/src/$1",
 			"test/(.+)": "<rootDir>/test/$1"
 		},
 		"roots": [
